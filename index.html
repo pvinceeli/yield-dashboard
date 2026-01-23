@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Responsive UI Layout with Tabs</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+    <button class="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
+
+    <div class="sidebar-content">
+	<button id="pickFolder">Select Base Folder</button>
+
+
+        <div>
+            <label>PRODUCT GROUP</label>
+            <select id="pg"></select>
+        </div>
+
+        <div>
+            <label>PRODUCT</label>
+            <select id="product"></select>
+        </div>
+
+        <div>
+            <label>MODEL</label>
+            <select  id="model"></select>
+        </div>
+
+        <div>
+            <label>YEAR</label>
+            <select  id="year"></select>
+        </div>
+        
+        <div>
+            <label>MONTH</label>
+            <select id="month"></select>
+        </div>
+
+        <div>
+            <button class="open-file-btn">Open File</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab(0)">Tab 1</div>
+        <div class="tab" onclick="switchTab(1)">Tab 2</div>
+    </div>
+
+    <!-- Tab 1 -->
+    <div class="tab-panel active">
+        <div class="fragment">
+            <h3>CUMULATIVE</h3>
+            <div class="cumulative-grid">
+                 <div class="single">
+                      <div class="row"><label>Label 1</label><span>Value 1</span></div>
+                 </div>
+                 <div class="rows">
+                      <div class="row"><label>Label 2</label><span>Value 2</span></div>
+                      <div class="row"><label>Label 3</label><span>Value 3</span></div>
+                      <div class="row"><label>Label 4</label><span>Value 4</span></div>
+                      <div class="row"><label>Label 5</label><span>Value 5</span></div>
+                      <div class="row"><label>Label 6</label><span>Value 6</span></div>
+                 </div>
+            </div>
+        </div>
+
+        <div class="fragment">
+            <h3>YIELD PER PROCESS</h3>
+            <div id="dynamic-container"></div>
+        </div>
+    </div>
+
+    <!-- Tab 2 -->
+    <div class="tab-panel">
+        <h4>TAB 2 HEADER</h4>
+        <div class="tab2-container">
+            <!-- Left fragment (1/3 width) -->
+            <div class="fragment left-fragment">
+                <h3>Left Fragment</h3>
+                <div class="table-container">
+                    <h4>WEEK 1</h4>
+                    <table border="1">
+  			<tr>
+   			    <th>Column 1</th>
+    			    <th>Column 2</th>
+    			    <th>Column 3</th>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+                    </table>
+                </div>
+                <div class="table-container">
+                    <h4>WEEK 2</h4>
+                    <table border="1">
+  			<tr>
+   			    <th>Column 1</th>
+    			    <th>Column 2</th>
+    			    <th>Column 3</th>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+                    </table>
+                </div>
+                <div class="table-container">
+                    <h4>WEEK 3</h4>
+                    <table border="1">
+  			<tr>
+   			    <th>Column 1</th>
+    			    <th>Column 2</th>
+    			    <th>Column 3</th>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+                    </table>
+                </div>
+                <div class="table-container">
+                    <h4>WEEK 4</h4>
+                    <table border="1">
+  			<tr>
+   			    <th>Column 1</th>
+    			    <th>Column 2</th>
+    			    <th>Column 3</th>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+                    </table>
+                </div>
+                <div class="table-container">
+                    <h4>WEEK 5</h4>
+                    <table border="1">
+  			<tr>
+   			    <th>Column 1</th>
+    			    <th>Column 2</th>
+    			    <th>Column 3</th>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right fragment (2/3 width) -->
+            <div class="fragment right-fragment">
+                <h3>Right Fragment</h3>
+                <div class="table-container">
+		    <h4>Main Table</h4>
+                    <table border="1">
+  			<tr>
+   			    <th>Column 1</th>
+    			    <th>Column 2</th>
+    			    <th>Column 3</th>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+  			<tr>
+   			    <td>-</td>
+    			    <td>-</td>
+    			    <td>-</td>
+  			</tr>
+                    </table>
+                </div>
+                <div class="chart-container">
+                    <canvas id="lineChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<script>
+    // Simple example line chart using Chart.js
+    const ctx = document.getElementById('lineChart').getContext('2d');
+    const lineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+            datasets: [{
+                label: 'Sample Line',
+                data: [12, 19, 3, 5, 2],
+                borderColor: '#1abc9c',
+                backgroundColor: 'rgba(26, 188, 156, 0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
+
+</body>
+</html>

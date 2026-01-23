@@ -1,0 +1,259 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+    background: #CA8EBA;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 260px;
+    background: #2c3e50;
+    color: white;
+    padding: 10px;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 55px;
+}
+
+.sidebar.collapsed .sidebar-content {
+    display: none;
+}
+
+.toggle-btn {
+    background: #34495e;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.sidebar label {
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.sidebar select {
+    width: 100%;
+    padding: 6px;
+    text-align: center;
+}
+
+.open-file-btn {
+    padding: 16px;
+    background: #1abc9c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.open-file-btn:hover {
+    background: #16a085;
+}
+
+/* ===== Main Content ===== */
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+/* ===== Tabs ===== */
+.tabs {
+    display: flex;
+    margin-bottom: 0;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #dcdde1;
+    border: 1px solid #bbb;
+    border-bottom: none;
+    margin-right: 4px;
+    border-radius: 6px 6px 0 0;
+}
+
+.tab.active {
+    background: white;
+    font-weight: bold;
+}
+
+/* ===== Tab Panels ===== */
+.tab-panel {
+    display: none;
+    border: 1px solid #bbb;
+    background: white;
+    padding: 10px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.tab-panel.active {
+    display: block;
+}
+
+.tab-panel h4{
+    text-align:center; 
+    margin: 0;
+    background-color:#7030A0;
+    color:#FFFFFF
+}
+
+/* ===== Fragments ===== */
+.fragment {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+.fragment h3 {
+    margin-top: 0;
+    text-align: center;
+}
+
+/* ===== Rows ===== */
+.cumulative-grid {
+    display:grid;
+    grid-template-columns: 150px auto;
+    grid-template-rows: auto;
+    gap: 10px 100px;
+}
+.single {
+    grid-column: 1;   /* second column */
+    grid-row: 1;      /* first row */
+}
+.rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px 12px; /* row gap / column gap */
+
+}
+.rows .row span{
+    display: flex;
+    gap: 5px;
+
+}
+.row {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center; 
+    margin-bottom: 10px;
+    gap: 5px;
+
+}
+
+.row label {
+    width: 160px;
+    font-weight: bold;
+}
+
+.row span {
+    color: #333;
+    white-space: nowrap;
+    border: 1px solid #ccc;   /* light gray border */
+    background-color: #f0f0f0; /* light gray background */
+    padding: 4px 6px;          /* spacing inside box */
+    border-radius: 4px;        /* rounded corners */
+    display: inline-block;     /* keeps box tight around text */
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .sidebar.collapsed {
+        height: 45px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .row label {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+}
+
+
+/* Tab 2 layout */
+.tab2-container {
+    display: flex;
+    gap: 20px;
+}
+
+/* Left fragment 1/3 */
+.left-fragment {
+    flex: 1 1 33%;
+}
+
+/* Right fragment 2/3 */
+.right-fragment {
+    flex: 2 1 67%;
+}
+.table-container h5 {
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+table, th, td {
+    border: 1px solid #333;
+}
+
+th, td {
+    padding: 6px;
+    text-align: center;
+    line-height: 0.5;
+}
+
+/* Chart container */
+.chart-container {
+    width: 100%;
+    height: 300px;
+    margin-top: 15px;
+}
+
+/* Responsive for small screens */
+@media (max-width: 768px) {
+    .tab2-container {
+        flex-direction: column;
+    }
+
+    .left-fragment, .right-fragment {
+        flex: 1 1 100%;
+    }
+}
