@@ -104,18 +104,22 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
         }
 
         // Open Excel file (assumes "data.xlsx")
-        const fileHandle = await dirHandle.getFileHandle("data.xlsx");
-        const file = await fileHandle.getFile();
-        const arrayBuffer = await file.arrayBuffer();
-
-        // Parse Excel
-        const workbook = XLSX.read(arrayBuffer, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-        // Render chart
-        renderChart(jsonData);
+        // Open Excel file
+         const fileHandle = await dirHandle.getFileHandle("data.xlsx");
+         const file = await fileHandle.getFile();
+         const arrayBuffer = await file.arrayBuffer();
+         
+         
+         // Parse Excel (ONLY workbook + worksheet here)
+         const workbook = XLSX.read(arrayBuffer, { type: "array" });
+         const sheetName = workbook.SheetNames[0];
+         const worksheet = workbook.Sheets[sheetName];
+         
+         
+         // Call external extraction methods
+         const processes = getProcesses(workbook);
+         const yieldData = getProcessYield(workbook, processes);
+         const topDefects = getTopDefects(workbook);
 
     } catch (err) {
         console.error("Error opening file:", err);
@@ -156,3 +160,4 @@ function renderChart(data) {
         }
     });
 }
+
