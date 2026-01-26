@@ -1,7 +1,7 @@
 /* ================================
    EXISTING SIDEBAR / TAB LOGIC
 ================================ */
-
+console.log("Script Loaded")
 function toggleSidebar() {
     document.getElementById("sidebar").classList.toggle("collapsed");
 }
@@ -103,7 +103,6 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
             dirHandle = await dirHandle.getDirectoryHandle(val);
         }
 
-        // Open Excel file (assumes "data.xlsx")
         // Open Excel file
          const fileHandle = await dirHandle.getFileHandle("data.xlsx");
          const file = await fileHandle.getFile();
@@ -118,8 +117,9 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
          
          // Call external extraction methods
          const processes = getProcesses(workbook);
-         const yieldData = getProcessYield(workbook, processes);
-         const topDefects = getTopDefects(workbook);
+         //const yieldData = getProcessYield(workbook, processes);
+         //const topDefects = getTopDefects(workbook);
+	 setProcessList(processes);
 
     } catch (err) {
         console.error("Error opening file:", err);
@@ -161,3 +161,38 @@ function renderChart(data) {
     });
 }
 
+function setProcessList(processes) {
+    const container = document.getElementById("dynamic-container");
+    container.innerHTML = "";
+
+    Object.entries(processes).forEach(([processName, yieldValue]) => {
+        const row = document.createElement("div");
+        row.className = "process-row";
+
+        // Process name (uneditable)
+        const processInput = document.createElement("input");
+        processInput.type = "text";
+        processInput.value = processName;
+        processInput.disabled = true;
+
+        // Yield (uneditable)
+        const yieldInput = document.createElement("input");
+        yieldInput.type = "text";
+        yieldInput.value = yieldValue;
+        yieldInput.disabled = true;
+
+        // Action button
+        const btn = document.createElement("button");
+        btn.textContent = "Open";
+        btn.addEventListener("click", () => {
+            console.log("Process selected:", processName);
+            // future: open P-chart / details
+        });
+
+        row.appendChild(processInput);
+        row.appendChild(yieldInput);
+        row.appendChild(btn);
+
+        container.appendChild(row);
+    });
+}
