@@ -175,6 +175,32 @@ body {
     border-radius: 4px;        /* rounded corners */
     display: inline-block;     /* keeps box tight around text */
 }
+/*Yield per process*/
+#dynamic-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px; /* space between columns and rows */
+}
+.process-row {
+    display: flex;
+    grid-template-columns: 200px min-content auto; /* Process | Yield | Button */
+    gap: 5px;
+    align-items: center;
+    padding: 5px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    }
+.process-btn {
+    width: min-content;
+}
+.process-input {
+    width: 100%;        /* fills the 200px grid cell */
+}
+
+.yield-input {
+    width: 5ch;
+    text-align: right;
+}
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
