@@ -96,6 +96,9 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
         return;
     }
 
+    let workbook = null;
+    let worksheet = null;
+
     try {
         // Traverse directories based on dropdowns
         let dirHandle = baseDirHandle;
@@ -104,27 +107,29 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
         }
 
         // Open Excel file
-         const fileHandle = await dirHandle.getFileHandle("data.xlsx");
-         const file = await fileHandle.getFile();
-         const arrayBuffer = await file.arrayBuffer();
-         
-         
-         // Parse Excel (ONLY workbook + worksheet here)
-         const workbook = XLSX.read(arrayBuffer, { type: "array" });
-         const sheetName = workbook.SheetNames[0];
-         const worksheet = workbook.Sheets[sheetName];
-         
-         
-         // Call external extraction methods
-         const processes = getProcesses(workbook);
-         //const yieldData = getProcessYield(workbook, processes);
-         //const topDefects = getTopDefects(workbook);
-	 setProcessList(processes);
+        const fileHandle = await dirHandle.getFileHandle("data.xlsx");
+        const file = await fileHandle.getFile();
+        const arrayBuffer = await file.arrayBuffer();
+
+        // Parse Excel (ONLY workbook + worksheet here)
+        workbook = XLSX.read(arrayBuffer, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        worksheet = workbook.Sheets[sheetName];
 
     } catch (err) {
         console.error("Error opening file:", err);
         alert("File or folder not found. Make sure 'data.xlsx' exists in the selected path.");
+        return; // ⛔ stop execution if parsing failed
     }
+
+    // ✅ SAFE ZONE — business logic only
+    const processes = getProcesses(workbook);
+    console.log(`the processes are: ${processes}`);
+    setProcessList(processes);
+
+    // later…
+    // const yieldData = getProcessYield(workbook, selectedProcess);
+    // const topDefects = getTopDefects(workbook);
 });
 
 // Chart.js rendering function
@@ -161,6 +166,28 @@ function renderChart(data) {
     });
 }
 
+function getProcesses(workbook) {
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+
+    // Read raw rows (array-of-arrays so we can use column indexes)
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+    const processYieldMap = {};
+
+    for (let i = 0; i < rows.length; i++) {
+        const colB = rows[i][0]; // Column B
+        const colC = rows[i][1]; // Column C (Process Name)
+        const colD = rows[i][2]; // Column D (Yield)
+        console.log(colB, colB === "Process");
+        if (colB === "Process" /*&& colC != null && colD != null*/) {
+            
+            processYieldMap[colC] = colD;
+        }
+    }
+
+    return processYieldMap;
+}
+
 function setProcessList(processes) {
     const container = document.getElementById("dynamic-container");
     container.innerHTML = "";
@@ -171,18 +198,21 @@ function setProcessList(processes) {
 
         // Process name (uneditable)
         const processInput = document.createElement("input");
+        processInput.className = "process-input";
         processInput.type = "text";
         processInput.value = processName;
         processInput.disabled = true;
 
         // Yield (uneditable)
         const yieldInput = document.createElement("input");
+        yieldInput.className = "yield-input";
         yieldInput.type = "text";
         yieldInput.value = yieldValue;
         yieldInput.disabled = true;
 
         // Action button
         const btn = document.createElement("button");
+        btn.className="process-btn"
         btn.textContent = "Open";
         btn.addEventListener("click", () => {
             console.log("Process selected:", processName);
