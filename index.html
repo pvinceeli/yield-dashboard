@@ -53,30 +53,30 @@
 
     <!-- Tabs -->
     <div class="tabs">
-        <div class="tab active" onclick="switchTab(0)">Tab 1</div>
-        <div class="tab" onclick="switchTab(1)">Tab 2</div>
+        <div class="tab active" onclick="switchTab(0)">Dashboard</div>
+        <div class="tab" onclick="switchTab(1)">Top Defect</div>
     </div>
 
     <!-- Tab 1 -->
     <div class="tab-panel active">
         <div class="fragment">
-            <h3>CUMULATIVE</h3>
+            <h3 style="border:2px solid black; padding:6px 12px; display:inline-block;text-align:center; width:100%;">CUMULATIVE</h3>
             <div class="cumulative-grid">
                  <div class="single">
-                      <div class="row"><label>Label 1</label><span>Value 1</span></div>
+                      <div class="process-span-div"><label>Process: </label><span class="process-span">-</span></div>
                  </div>
                  <div class="rows">
-                      <div class="row"><label>Label 2</label><span>Value 2</span></div>
-                      <div class="row"><label>Label 3</label><span>Value 3</span></div>
-                      <div class="row"><label>Label 4</label><span>Value 4</span></div>
-                      <div class="row"><label>Label 5</label><span>Value 5</span></div>
-                      <div class="row"><label>Label 6</label><span>Value 6</span></div>
+                      <div class="row"><label>Target Yield: </label><span class="target-yield">-</span></div>
+                      <div class="row"><label>Actual Yield: </label><span class="actual-yield">-</span></div>
+                      <div class="row"><label>Total Input: </label><span class="total-input">-</span></div>
+                      <div class="row"><label>Total Output: </label><span class="total-output">-</span></div>
+                      <div class="row"><label>Reject Qty: </label><span class="reject-qty">-</span></div>
                  </div>
             </div>
         </div>
 
         <div class="fragment">
-            <h3>YIELD PER PROCESS</h3>
+            <h3 style="border:2px solid black; padding:6px 12px; display:inline-block;text-align:center; width:100%;">YIELD PER PROCESS</h3>
             <div id="dynamic-container"></div>
         </div>
     </div>
@@ -91,10 +91,16 @@
                 <div class="table-container">
                     <h4>WEEK 1</h4>
                     <table border="1">
+			<colgroup>
+        			<col style="width:50%">
+        			<col style="width:25%">
+        			<col style="width:25%">
+    			</colgroup>
+
   			<tr>
-   			    <th>Column 1</th>
-    			    <th>Column 2</th>
-    			    <th>Column 3</th>
+   			    <th>Top Defects</th>
+    			    <th>QTY</th>
+    			    <th>NG%</th>
   			</tr>
   			<tr>
    			    <td>-</td>
@@ -126,10 +132,15 @@
                 <div class="table-container">
                     <h4>WEEK 2</h4>
                     <table border="1">
+			<colgroup>
+        			<col style="width:50%">
+        			<col style="width:25%">
+        			<col style="width:25%">
+    			</colgroup>
   			<tr>
-   			    <th>Column 1</th>
-    			    <th>Column 2</th>
-    			    <th>Column 3</th>
+   			    <th>Top Defects</th>
+    			    <th>QTY</th>
+    			    <th>NG%</th>
   			</tr>
   			<tr>
    			    <td>-</td>
@@ -161,10 +172,15 @@
                 <div class="table-container">
                     <h4>WEEK 3</h4>
                     <table border="1">
+			<colgroup>
+        			<col style="width:50%">
+        			<col style="width:25%">
+        			<col style="width:25%">
+    			</colgroup>
   			<tr>
-   			    <th>Column 1</th>
-    			    <th>Column 2</th>
-    			    <th>Column 3</th>
+   			    <th>Top Defects</th>
+    			    <th>QTY</th>
+    			    <th>NG%</th>
   			</tr>
   			<tr>
    			    <td>-</td>
@@ -196,10 +212,15 @@
                 <div class="table-container">
                     <h4>WEEK 4</h4>
                     <table border="1">
+			<colgroup>
+        			<col style="width:50%">
+        			<col style="width:25%">
+        			<col style="width:25%">
+    			</colgroup>
   			<tr>
-   			    <th>Column 1</th>
-    			    <th>Column 2</th>
-    			    <th>Column 3</th>
+   			    <th>Top Defects</th>
+    			    <th>QTY</th>
+    			    <th>NG%</th>
   			</tr>
   			<tr>
    			    <td>-</td>
@@ -231,10 +252,15 @@
                 <div class="table-container">
                     <h4>WEEK 5</h4>
                     <table border="1">
+			<colgroup>
+        			<col style="width:50%">
+        			<col style="width:25%">
+        			<col style="width:25%">
+    			</colgroup>
   			<tr>
-   			    <th>Column 1</th>
-    			    <th>Column 2</th>
-    			    <th>Column 3</th>
+   			    <th>Top Defects</th>
+    			    <th>QTY</th>
+    			    <th>NG%</th>
   			</tr>
   			<tr>
    			    <td>-</td>
@@ -268,13 +294,13 @@
             <!-- Right fragment (2/3 width) -->
             <div class="fragment right-fragment">
                 <h3>Right Fragment</h3>
-                <div class="table-container">
+                <div class="overall-container">
 		    <h4>Main Table</h4>
                     <table border="1">
   			<tr>
-   			    <th>Column 1</th>
-    			    <th>Column 2</th>
-    			    <th>Column 3</th>
+   			    <th>Top Defects</th>
+    			    <th>QTY</th>
+    			    <th>NG%</th>
   			</tr>
   			<tr>
    			    <td>-</td>
@@ -303,9 +329,28 @@
   			</tr>
                     </table>
                 </div>
-                <div class="chart-container">
-                    <canvas id="lineChart" width="400" height="200"></canvas>
-                </div>
+		<div class="chart-wrapper" style="display: flex; align-items: flex-start; gap: 20px;">
+    			<!-- Vertical Radio Buttons -->
+    			<div class="radio-container" style="display: flex; flex-direction: column;">
+        			<label><input type="radio" name="topDefect" checked> Top 1</label>
+        			<label><input type="radio" name="topDefect"> Top 2</label>
+        			<label><input type="radio" name="topDefect"> Top 3</label>
+        			<label><input type="radio" name="topDefect"> Top 4</label>
+        			<label><input type="radio" name="topDefect"> Top 5</label>
+        			<label><input type="radio" name="topDefect"> Top 6</label>
+        			<label><input type="radio" name="topDefect"> Top 7</label>
+        			<label><input type="radio" name="topDefect"> Top 8</label>
+        			<label><input type="radio" name="topDefect"> Top 9</label>
+        			<label><input type="radio" name="topDefect"> Top 10</label>
+    			</div>
+
+    			<!-- Chart canvas -->
+    			<div class="chart-container">
+        			<canvas id="lineChart" width="400" height="200"></canvas>
+    			</div>
+		</div>
+
+                
             </div>
         </div>
     </div>
@@ -315,28 +360,6 @@
 <script src="script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-<script>
-    // Simple example line chart using Chart.js
-    const ctx = document.getElementById('lineChart').getContext('2d');
-    const lineChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
-            datasets: [{
-                label: 'Sample Line',
-                data: [12, 19, 3, 5, 2],
-                borderColor: '#1abc9c',
-                backgroundColor: 'rgba(26, 188, 156, 0.2)',
-                fill: true,
-                tension: 0.3
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-</script>
 
 </body>
 </html>
