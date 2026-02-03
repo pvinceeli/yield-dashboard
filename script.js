@@ -3,6 +3,13 @@
 ================================ */
 let workbook = null;
 let lineChart = null;
+let top10Defects = {};
+
+window.addEventListener("DOMContentLoaded", () => {
+    initEmptyLineChart();
+});
+
+
 function toggleSidebar() {
     document.getElementById("sidebar").classList.toggle("collapsed");
 }
@@ -17,149 +24,40 @@ function switchTab(index) {
     });
 }
 
-/* ================================
-   FOLDER-BASED DROPDOWNS
-================================ */
-
-let baseDirHandle = null;
-
-const selects = [
-    document.getElementById("pg"),       // PRODUCT GROUP
-    document.getElementById("product"),  // PRODUCT
-    document.getElementById("model"),    // MODEL
-    document.getElementById("year"),     // YEAR
-    document.getElementById("month")     // MONTH
-];
-
-// Button: select base directory ONCE
-document.getElementById("pickFolder").addEventListener("click", async () => {
-    try {
-        baseDirHandle = await window.showDirectoryPicker();
-        await loadLevel(baseDirHandle, selects[0]);
-        console.log("Base folder selected");
-    } catch (err) {
-        console.warn("Folder selection cancelled");
-    }
-});
-
-// Load folder names into a dropdown
-async function loadLevel(dirHandle, select) {
-    select.innerHTML = `<option value="">Select</option>`;
-    for await (const entry of dirHandle.values()) {
-        if (entry.kind === "directory") {
-            const opt = document.createElement("option");
-            opt.value = entry.name;
-            opt.textContent = entry.name;
-            select.appendChild(opt);
-        }
-    }
-}
-
-// Cascading dropdown behavior
-selects.forEach((select, index) => {
-    select.addEventListener("change", async () => {
-        // Clear downstream selects
-        for (let i = index + 1; i < selects.length; i++) {
-            selects[i].innerHTML = `<option value="">Select</option>`;
-        }
-
-        if (!baseDirHandle || !select.value) return;
-
-        try {
-            let currentHandle = baseDirHandle;
-            for (let i = 0; i <= index; i++) {
-                currentHandle = await currentHandle.getDirectoryHandle(selects[i].value);
-            }
-
-            if (selects[index + 1]) {
-                await loadLevel(currentHandle, selects[index + 1]);
-            }
-        } catch (err) {
-            console.error("Folder not found:", err);
-        }
-    });
-});
-
-/* ================================
-   OPEN EXCEL & RENDER CHART
-================================ */
-
 document.querySelector(".open-file-btn").addEventListener("click", async () => {
-    if (!baseDirHandle) {
-        alert("Please select a base folder first");
-        return;
-    }
-
-    const values = selects.map(s => s.value);
-    if (values.includes("")) {
-        alert("Please select all dropdowns");
-        return;
-    }
-
-    // Declare dirHandle here
-    let dirHandle = baseDirHandle;
-
     try {
-        // Traverse dropdown-selected subdirectories
-        for (let val of values) {
-            dirHandle = await dirHandle.getDirectoryHandle(val);
-        }
+        const [fileHandle] = await window.showOpenFilePicker({
+            types: [
+                {
+                    description: "Excel Files",
+                    accept: {
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+                        "application/vnd.ms-excel": [".xls"]
+                    }
+                }
+            ],
+            multiple: false
+        });
 
-        // Open Excel file
-        const fileHandle = await dirHandle.getFileHandle("data.xlsx");
         const file = await fileHandle.getFile();
         const arrayBuffer = await file.arrayBuffer();
 
         // Parse workbook
         workbook = XLSX.read(arrayBuffer, { type: "array" });
         const sheetName = workbook.SheetNames[0];
-        worksheet = workbook.Sheets[sheetName];
+        const worksheet = workbook.Sheets[sheetName];
+
+        // ✅ SAFE ZONE — business logic only
+        const processes = getProcesses(workbook);
+        setProcessList(processes);
 
     } catch (err) {
-        console.error("Error opening file:", err);
-        alert("File or folder not found. Make sure 'data.xlsx' exists in the selected path.");
-        return; // stop execution if parsing failed
-    }
-
-    // ✅ SAFE ZONE — business logic only
-    const processes = getProcesses(workbook);
-    console.log("The processes are:", processes);
-    setProcessList(processes);
-});
-
-// Chart.js rendering function
-function renderChart(data) {
-    // Example assumes Excel has columns: "Label" and "Value"
-    const labels = data.map(row => row.Label);
-    const values = data.map(row => row.Value);
-
-    const canvas = document.getElementById("myChart");
-    if (!canvas) {
-        console.warn("No canvas element found with id 'myChart'");
-        return;
-    }
-
-    const ctx = canvas.getContext("2d");
-
-    // Destroy previous chart if exists
-    if (window.myChart) window.myChart.destroy();
-
-    window.myChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels,
-            datasets: [{
-                label: "Excel Data",
-                data: values,
-                backgroundColor: "rgba(75, 192, 192, 0.6)"
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: true } }
+        if (err.name !== "AbortError") {
+            console.error("Error opening Excel file:", err);
+            alert("Failed to open Excel file.");
         }
-    });
-}
+    }
+});
 
 function getProcesses(workbook) {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -196,7 +94,6 @@ function getProcesses(workbook) {
             processYieldMap[colC].indices[1] = endIndex;
         }
     }
-    console.log(processYieldMap);
     return processYieldMap;
 }
 
@@ -254,7 +151,6 @@ function getProcessCumulative({ processName, yieldValue, indices }) {
         console.error("Workbook not loaded!");
         return {};
     }
-
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
@@ -278,12 +174,11 @@ function getProcessCumulative({ processName, yieldValue, indices }) {
             result[label] = rows[i][63]; // Column BM
         }
     }
-    console.log(result);
     setProcessCumulative(processName, result);
     const topDefects = getTopDefect(indices);
+    top10Defects = topDefects.overall;
     setTopDefects(topDefects);
-    setTopDefectsSummary(topDefects);
-    updateChartByDefect(topDefects, 0);
+    bindTopDefectRadios(topDefects);
 }
 
 function setProcessCumulative(processname, totals) {
@@ -334,21 +229,20 @@ function getTopDefect(indices) {
     const sheet = workbook.Sheets[workbook.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    const endRow = Math.max(indices[0], indices[1]);
-    console.log("endRow is: ", endRow);
+    const startIndex = Math.min(indices[0], indices[1]);
+    const endIndex = Math.max(indices[0], indices[1]);
 
     // Week columns: BO → BS (Week 1 → Week 5)
-    const weekColumns = [61, 62, 63, 64, 65];  
+    const weekColumns = [65, 66, 67, 68, 69];  
 
     // Find the "MACHINING DEFECT" row within the process block
     let startRow = null;
-    for (let i = 0; i < rows.length; i++) {
-    if (i < indices[0] || i > indices[1]) continue; // skip outside process block
-    if (rows[i][0]?.toString().trim() === "MACHINING DEFECT") {
-        startRow = i + 1;
-        break;
+    for (let i = startIndex; i <= endIndex; i++) {
+        if (rows[i][0]?.toString().trim() === "MACHINING DEFECT") {
+            startRow = i + 1;
+            break;
+        }
     }
-}
 
     if (startRow === null) {
         console.warn("MACHINING DEFECT not found in process block");
@@ -356,23 +250,21 @@ function getTopDefect(indices) {
     }
 
     const weekDefects = {};
+    const overallDefects = {};
 
     weekColumns.forEach((colIndex, i) => {
         const weekKey = `ww${i + 1}`;
         const defects = {};
-	console.log("startRow: ", startRow);
-	console.log("endRow: ", endRow);
-	console.log("for loop: ", startRow <= endRow );
-        for (let r = startRow; r <= endRow; r++) {
-            const label = rows[r][0];       // Column B
+
+        for (let r = startRow; r <= endIndex; r++) {
+            const label = rows[r][0];       // Column A
             const value = rows[r][colIndex]; // Week-specific column
-	    console.log(value, typeof value === "number");
             if (label && typeof value === "number" && value > 0) {
                 defects[label] = value;
+                overallDefects[label] = (overallDefects[label] || 0) + value;
             }
         }
-
-        // Sort and pick top 5
+        // Sort and pick top 5 for this week
         const topDefects = Object.entries(defects)
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5)
@@ -381,99 +273,220 @@ function getTopDefect(indices) {
         weekDefects[weekKey] = topDefects;
     });
 
-    return weekDefects;
-}
-function setTopDefects(topDefects) {
-    // topDefects = { ww1: [{name, value}, ...], ww2: [...], ... ww5: [...] }
-
-    for (let week = 1; week <= 5; week++) {
-        const weekKey = `ww${week}`;
-        const weekData = topDefects[weekKey] || [];
-
-        // Find the corresponding table
-        const tableContainer = document.querySelector(`.tab2-container .table-container:nth-child(${week}) table`);
-        if (!tableContainer) continue;
-
-        // Get all rows except header (first row)
-        const rows = tableContainer.querySelectorAll("tr");
-        
-        for (let i = 1; i <= 5; i++) { // only fill top 5 rows
-            const defect = weekData[i - 1];
-            const row = rows[i];
-            if (!row) continue;
-
-            if (defect) {
-                row.cells[0].textContent = defect.name; // Top Defects
-                row.cells[1].textContent = defect.value; // QTY
-                // row.cells[2] left as is for NG%
-            } else {
-                row.cells[0].textContent = "-";
-                row.cells[1].textContent = "-";
-            }
-        }
-    }
-}
-function setTopDefectsSummary(weekDefects) {
-    const combinedDefects = {};
-
-    // Step 1: Combine all weeks
-    Object.values(weekDefects).forEach(week => {
-        week.forEach(({ name, value }) => {
-            if (!combinedDefects[name]) combinedDefects[name] = 0;
-            combinedDefects[name] += value; // sum over weeks
-        });
-    });
-
-    // Step 2: Sort by value descending and pick top 10
-    const top10 = Object.entries(combinedDefects)
+    // Overall top 10 defects across all weeks
+    const topOverall = Object.entries(overallDefects)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10)
         .map(([name, value]) => ({ name, value }));
 
-    // Step 3: Populate the table
-    const table = document.querySelector(".overall-container table"); // assuming it's the first table after the <h4>
-    const rows = table.querySelectorAll("tr");
-
-    // Clear previous values (keep header row)
-    for (let i = 1; i < rows.length; i++) {
-        const td = rows[i].querySelectorAll("td");
-        td[0].textContent = "-";
-        td[1].textContent = "-";
-        td[2].textContent = "-";
-    }
-
-    // Fill top 10 defects
-    top10.forEach((defect, index) => {
-        if (index + 1 >= rows.length) return; // avoid overflow
-        const td = rows[index + 1].querySelectorAll("td");
-        td[0].textContent = defect.name;
-        td[1].textContent = defect.value;
-        td[2].textContent = "-"; // NG% placeholder
-    });
-
-    console.log("Top 10 monthly defects:", top10);
+    weekDefects.overall = topOverall;
+    return weekDefects;
 }
-function updateChartByDefect(topDefects, defectIndex) {
-    if (!lineChart) {
-        console.error("Chart instance not found!");
-        return;
+
+
+function setTopDefects(topDefects) {
+    if (!topDefects) return;
+
+    // Read total input once
+    const totalInputSpan = document.querySelector(".total-input");
+    const totalInputs = totalInputSpan
+        ? Number(totalInputSpan.textContent.replace(/,/g, "")) || 0
+        : 0;
+
+    const fillTable = (table, data, maxRows) => {
+        if (!table) return;
+	
+        const rows = table.querySelectorAll("tr");
+
+        for (let i = 1; i <= maxRows; i++) {
+            const row = rows[i];
+            if (!row) continue;
+
+            const defect = data[i - 1];
+
+            if (defect) {
+                row.cells[0].textContent = defect.name.toUpperCase();
+                row.cells[1].textContent = defect.value;
+
+                // NG%
+                if (row.cells[2]) {
+                    const ngPct = totalInputs > 0
+                        ? ((defect.value / totalInputs) * 100).toFixed(2)
+                        : "0.00";
+                    row.cells[2].textContent = ngPct;
+                }
+            } else {
+                row.cells[0].textContent = "-";
+                row.cells[1].textContent = "-";
+                if (row.cells[2]) row.cells[2].textContent = "-";
+            }
+        }
+    };
+    /* ---------- Weekly tables (ww1 → ww5) ---------- */
+    for (let week = 1; week <= 5; week++) {
+        const weekKey = `ww${week}`;
+        const weekData = topDefects[weekKey] || [];
+
+        const table = document.querySelector(
+            `.tab2-container .table-container:nth-child(${week+1}) table`
+        );
+        fillTable(table, weekData, 5);
     }
 
-    const weeks = ["ww1", "ww2", "ww3", "ww4", "ww5"];
+    /* ---------- Overall table (top 10) ---------- */
+    if (topDefects.overall) {
+        const overallTable = document.querySelector(
+            ".overall-container"
+        );
 
-    // Get quantity values for the selected defect across all weeks
-    const data = weeks.map(week => {
-        const defects = topDefects[week] || [];
-        return defects[defectIndex] ? defects[defectIndex].value : 0;
+        fillTable(overallTable, topDefects.overall, 10);
+    }
+}
+
+function initEmptyLineChart() {
+    const ctx = document.getElementById("lineChart").getContext("2d");
+
+    lineChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [],           // 👈 empty X-axis
+            datasets: [{
+                label: "Defect Trend",
+                data: [],          // 👈 empty Y values
+                borderColor: "#1f77b4",
+                backgroundColor: "rgba(31, 119, 180, 0.15)",
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,     // smoother when updating often
+            plugins: {
+                legend: {
+                    display: true
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Week"
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: "Quantity"
+                    }
+                }
+            }
+        }
+    });
+}
+
+
+
+
+function setDefectLineChart(weekDefects, defectName) {
+    if (!weekDefects || !defectName) return;
+
+    // Only weekly keys (exclude "overall")
+    const weekKeys = Object.keys(weekDefects)
+        .filter(k => k.startsWith("ww"))
+        .sort((a, b) => Number(a.slice(2)) - Number(b.slice(2)));
+
+    const labels = [];
+    const values = [];
+ 
+    weekKeys.forEach(weekKey => {
+        labels.push(weekKey.toUpperCase());
+        const weekData = weekDefects[weekKey] || [];
+        const match = weekData.find(d => d.name === defectName);
+        values.push(match ? match.value : 0);
     });
 
-    // Update chart
-    lineChart.data.labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
-    lineChart.data.datasets[0].data = data;
-    lineChart.data.datasets[0].label = `Top ${defectIndex + 1} Defect`;
+    updateLineChart(labels, values, defectName);
+}
 
+
+
+function bindTopDefectRadios(weekDefects) {
+    if (!weekDefects || !Array.isArray(weekDefects.overall)) return;
+
+    const radios = document.querySelectorAll('input[name="topDefect"]');
+
+    // Remove old listeners by cloning
+    radios.forEach(radio => {
+        radio.replaceWith(radio.cloneNode(true));
+    });
+
+    const newRadios = document.querySelectorAll('input[name="topDefect"]');
+    const topOverall = weekDefects.overall;
+
+    newRadios.forEach((radio, index) => {
+        const defect = topOverall[index];
+        if (!defect) return;
+
+        radio.addEventListener("change", () => {
+            setDefectLineChart(weekDefects, defect.name);
+        });
+    });
+
+    // Update radio labels/UI
+    updateTopDefectRadios(topOverall);
+
+    // Initial load → Top 1 defect
+    if (topOverall.length > 0) {
+        setDefectLineChart(weekDefects, topOverall[0].name);
+    }
+}
+
+
+
+function updateLineChart(labels, values, defectName) {
+    if (!lineChart) return;
+
+    lineChart.data.labels = labels;
+    lineChart.data.datasets[0].label = defectName.toUpperCase();
+    lineChart.data.datasets[0].data = values;
     lineChart.update();
 }
+
+function updateTopDefectRadios(top10Defects) {
+    const radios = document.querySelectorAll('input[name="topDefect"]');
+    if (!Array.isArray(top10Defects)) return;
+
+    radios.forEach((radio, index) => {
+        const defect = top10Defects[index];
+
+        if (!defect) {
+            radio.disabled = true;
+            radio.checked = false;
+        } else {
+            radio.disabled = false;
+            radio.dataset.defectName = defect.name;
+        }
+    });
+
+    // Auto-select the first enabled radio
+    const firstEnabled = Array.from(radios).find(r => !r.disabled);
+    if (firstEnabled) {
+	firstEnabled.checked = true;
+	setDefectLineChart(weekDefects, weekDefects.overall[0].name);
+	}
+}
+
+
+
+
 
 
 
