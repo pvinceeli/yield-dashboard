@@ -6,8 +6,28 @@
 body {
     margin: 0;
     display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #CA8EBA;	
+}
+.content-body {
+    margin: 0;
+    display: flex;
     min-height: 100vh;
     background: #CA8EBA;
+}
+h1.logo-container {
+    text-align: center;
+    background: #000000;
+    margin-top: 0;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+h1.logo-container img {
+  height: 40px;
+  display: block;
+  margin: 0 auto;
 }
 
 /* ===== Sidebar ===== */
@@ -55,6 +75,20 @@ body {
     padding: 6px;
     text-align: center;
 }
+.filename-display {
+    display:grid;
+}
+.file-name {
+    background: white;       /* semicolon instead of colon */
+    border: 2px solid #ccc;  /* width | style | color */
+    padding: 6px;
+    border-radius: 3px;
+    display: inline-block;
+    text-align: center;
+    font-size: 13px;
+    color: #333;
+}
+
 
 .open-file-btn {
     padding: 16px;
@@ -71,8 +105,8 @@ body {
 
 /* ===== Main Content ===== */
 .main {
+    background:#000000;
     flex: 1;
-    padding: 20px;
 }
 
 /* ===== Tabs ===== */
@@ -92,21 +126,27 @@ body {
 }
 
 .tab.active {
+    display:flex;
     background: white;
     font-weight: bold;
+    border: 3px solid #7030A0;
 }
 
 /* ===== Tab Panels ===== */
 .tab-panel {
+    flex:1;
     display: none;
-    border: 1px solid #bbb;
+    border: 3px solid #7030A0;
     background: white;
     padding: 10px;
     border-radius: 0 6px 6px 6px;
+    min-height: 85%;
 }
 
 .tab-panel.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
+	
 }
 
 .tab-panel h4{
@@ -118,11 +158,31 @@ body {
 
 /* ===== Fragments ===== */
 .fragment {
+    flex-direction: column;
     border: 1px solid #ddd;
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 4px;
-    background: #f9f9f9;
+    background: #f2f2f2;
+}
+
+.fragment1 {
+    flex-direction: column;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    background: #CA8EBA;
+}
+
+.fragment2 {
+    flex:1;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    background: #CA8EBA;
 }
 
 .fragment h3 {
@@ -190,32 +250,42 @@ body {
     display: inline-block;     /* keeps box tight around text */
     width: min-content;
 }
-/*Yield per process*/
+/* Container for all process rows */
 #dynamic-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 10px; /* space between columns and rows */
+    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    gap: 10px; /* space between rows and columns */
 }
+
+/* Each row itself */
 .process-row {
-    display: flex;
-    grid-template-columns: 200px min-content auto; /* Process | Yield | Button */
+    display: grid;
+    grid-template-columns: auto min-content min-content; /* Process | Yield | Button */
     gap: 5px;
     align-items: center;
     padding: 5px;
     border-radius: 6px;
-    background: #f5f5f5;
-    }
-.process-btn {
-    width: min-content;
+    background: #CA8EBA;
 }
+
 .process-input {
-    width: 100%;        /* fills the 200px grid cell */
+    border: 3px solid #DDEBF7;
+    width: 100%;      /* fills first column */
+    min-width: 0;     /* ensures it can shrink if needed */
+    box-sizing: border-box;
+    background: #f2f2f2;
 }
 
 .yield-input {
-    width: 9ch;
-    text-align: left;
+    width: 9ch; /* only wide enough for its value */
+    background: #f2f2f2;
 }
+
+.process-btn {
+    width: min-content; /* only wide enough for the button */
+}
+
+
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
