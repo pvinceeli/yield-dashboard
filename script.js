@@ -3,6 +3,7 @@
 ================================ */
 let workbook = null;
 let lineChart = null;
+let worksheet = null;
 let top10Defects = {};
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -44,10 +45,17 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
 
         // Parse workbook
         workbook = XLSX.read(arrayBuffer, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
 
-        // ✅ SAFE ZONE — business logic only
+        // Display filename
+        document.getElementById("selected-file").textContent = file.name;
+
+        // Populate sheet dropdown
+        populateSheetDropdown(workbook);
+
+        // Optionally, set default worksheet
+        worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        // ✅ SAFE ZONE — business logic
         const processes = getProcesses(workbook);
         setProcessList(processes);
 
@@ -59,8 +67,54 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
     }
 });
 
+function populateSheetDropdown(workbook) {
+    const sheetSelect = document.getElementById("sheet-select");
+
+    // Clear existing options
+    sheetSelect.innerHTML = "";
+
+    // Add placeholder
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Change Sheet";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    sheetSelect.appendChild(placeholder);
+
+    // Add sheets
+    workbook.SheetNames.forEach(sheetName => {
+        const option = document.createElement("option");
+        option.value = sheetName;
+        option.textContent = sheetName;
+        sheetSelect.appendChild(option);
+    });
+
+    // Optional: change worksheet when user selects a sheet
+    sheetSelect.addEventListener("change", (e) => {
+        const selectedSheet = e.target.value;
+        worksheet = workbook.Sheets[selectedSheet];
+        console.log("Selected sheet:", selectedSheet);
+        // You can also re-run business logic here if needed
+        const processes = getProcesses(workbook);
+        setProcessList(processes);
+	clearTopDefects();
+	updateLineChart([], [], "")
+	top10Defects = {};
+	disableTopDefectRadios();
+    });
+}
+
+function disableTopDefectRadios() {
+    const radios = document.querySelectorAll('input[name="topDefect"]');
+
+    radios.forEach(radio => {
+        radio.disabled = true;  // disable the radio button
+        radio.checked = false;  // optional: uncheck it
+    });
+}
+
 function getProcesses(workbook) {
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const sheet = worksheet;
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
     const processYieldMap = {};
@@ -68,14 +122,15 @@ function getProcesses(workbook) {
     for (let i = 0; i < rows.length; i++) {
         const colB = rows[i][0]; // "Process"
         const colC = rows[i][1]; // Process Name
-
-        if (colB === "Process" && colC) {
+	if (!colB) continue;
+        if (colB.replace(/\s+/g, '').toLowerCase() === "process" && colC) {
             const startIndex = i;
             let endIndex = rows.length - 1;
-
+		
             // Find yield %
             for (let j = i + 1; j < rows.length; j++) {
-                if (rows[j][0] === "Yield %") {
+		if(!rows[j][0]) continue;
+                if (rows[j][0].replace(/\s+/g, '').toLowerCase() === "yield%" ) {
                     processYieldMap[colC] = {
                         yield: Number((rows[j][63] * 100).toFixed(2)),
                         indices: [startIndex, null]
@@ -83,7 +138,7 @@ function getProcesses(workbook) {
                 }
 
                 // Stop when next process is found
-                if (rows[j][0] === "Process") {
+                if (rows[j][0].replace(/\s+/g, '').toLowerCase() === "process") {
                     endIndex = j - 1;
                     i = j - 1;
                     break;
@@ -91,7 +146,12 @@ function getProcesses(workbook) {
             }
 
             // Finalize indices
-            processYieldMap[colC].indices[1] = endIndex;
+	    try{
+            	processYieldMap[colC].indices[1] = endIndex;
+	    }catch(error){
+	    	console.error("Yield% not found on " + colC, error.message);
+		alert("Yield% not found on " + colC);
+	    }
         }
     }
     return processYieldMap;
@@ -151,7 +211,7 @@ function getProcessCumulative({ processName, yieldValue, indices }) {
         console.error("Workbook not loaded!");
         return {};
     }
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const sheet = worksheet;
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
     const [startRow, endRow] = [Math.min(indices[0], indices[1]), Math.max(indices[0], indices[1])];
@@ -168,17 +228,26 @@ function getProcessCumulative({ processName, yieldValue, indices }) {
         yield: yieldValue
     };
 
-    for (let i = startRow; i <= endRow+1 && i < rows.length; i++) {
-        const label = rows[i][0]; // Column B
-        if (targets.has(label)) {
-            result[label] = rows[i][63]; // Column BM
-        }
+    // Pre-normalize the targets to avoid repeated string processing
+const normalizedTargets = new Set([...targets].map(t => t.replace(/\s+/g, '').toLowerCase()));
+
+for (let i = startRow; i <= endRow + 1 && i < rows.length; i++) {
+    const label = rows[i][0];
+    if (!label) continue;
+    const normalizedLabel = label.replace(/\s+/g, '').toLowerCase();
+    if (normalizedTargets.has(normalizedLabel)) {
+        // Find the original target string to store in result
+        const originalTarget = [...targets].find(t => t.replace(/\s+/g, '').toLowerCase() === normalizedLabel);
+        result[originalTarget] = rows[i][63];
     }
+}
+
     setProcessCumulative(processName, result);
     const topDefects = getTopDefect(indices);
     top10Defects = topDefects.overall;
     setTopDefects(topDefects);
     bindTopDefectRadios(topDefects);
+    setDefectLineChart(topDefects, top10Defects[0].name)
 }
 
 function setProcessCumulative(processname, totals) {
@@ -220,13 +289,42 @@ function setProcessCumulative(processname, totals) {
     }
 }
 
+function clearTopDefects() {
+    const fillEmpty = (table, maxRows) => {
+        if (!table) return;
+
+        const rows = table.querySelectorAll("tr");
+        for (let i = 1; i <= maxRows; i++) { // skip header
+            const row = rows[i];
+            if (!row) continue;
+
+            // Set all cells in the row to '-'
+            for (let cell of row.cells) {
+                cell.textContent = "-";
+            }
+        }
+    };
+
+    // Weekly tables (ww1 → ww5)
+    for (let week = 1; week <= 5; week++) {
+        const table = document.querySelector(
+            `.tab2-container .table-container:nth-child(${week + 1}) table`
+        );
+        fillEmpty(table, 5); // top 5 rows per week
+    }
+
+    // Overall table (top 10)
+    const overallTable = document.querySelector(".overall-container");
+    fillEmpty(overallTable, 10); // top 10 rows
+}
+
 function getTopDefect(indices) {
     if (!workbook) {
         console.error("Workbook not loaded!");
         return {};
     }
 
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const sheet = worksheet;
     const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
     const startIndex = Math.min(indices[0], indices[1]);
@@ -480,7 +578,7 @@ function updateTopDefectRadios(top10Defects) {
     const firstEnabled = Array.from(radios).find(r => !r.disabled);
     if (firstEnabled) {
 	firstEnabled.checked = true;
-	setDefectLineChart(weekDefects, weekDefects.overall[0].name);
+	setDefectLineChart(top10Defects, top10Defects[0].name);
 	}
 }
 
