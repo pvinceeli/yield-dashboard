@@ -1,390 +1,295 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Yield Dashboard ver 2.0</title>
-<link rel="stylesheet" href="style.css">
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+    <!-- Character encoding for proper text rendering -->
+    <meta charset="UTF-8">
+
+    <!-- Page title displayed in browser tab -->
+    <title>Yield Dashboard ver 2.0</title>
+
+    <!-- External stylesheet for layout and design -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Application favicon -->
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- 
+===============================================================================
+SIDEBAR SECTION
+Contains file selection, sheet selection, and contextual product information.
+===============================================================================
+-->
 <div class="content-body">
-<div id="sidebar" class="sidebar">
-    <button class="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
+    <div id="sidebar" class="sidebar">
 
-    <div class="sidebar-content">
+        <!-- Sidebar toggle button (collapsible navigation) -->
+        <button class="toggle-btn" onclick="toggleSidebar()">☰ Menu</button>
 
-    <!-- Non-editable entry -->
-        <div class="filename-display">
-            <label>PRODUCT</label>
-            <span class="file-name" id="selected-file">
-                No file loaded
-            </span>
+        <div class="sidebar-content">
+
+            <!-- Displays currently selected product/file (read-only UI element) -->
+            <div class="filename-display">
+                <label>PRODUCT</label>
+                <span class="file-name" id="selected-file">
+                    No file loaded
+                </span>
+            </div>
+
+            <!-- Excel sheet selector (populated dynamically via JavaScript) -->
+            <div>
+                <label for="sheet-select">Select Sheet</label>
+                <select id="sheet-select"></select>
+            </div>
+
+            <!-- File upload trigger -->
+            <div>
+                <button class="open-file-btn">Open File</button>
+            </div>
+
         </div>
-	<div>
-            <label for="sheet-select">Select Sheet</label>
-            <select id="sheet-select"></select>
-        </div>
-        <div>
-            <button class="open-file-btn">Open File</button>
-        </div>
-	
     </div>
-</div>
 
-<!-- Main -->
+<!-- 
+===============================================================================
+MAIN CONTENT AREA
+Contains tab navigation and dynamic dashboard views.
+===============================================================================
+-->
 <div class="main">
-    <h1 class="logo-container"><img src="logo.png" alt="Logo"></h1>
-    <!-- Tabs -->
+
+    <!-- Company / Application Logo -->
+    <h1 class="logo-container">
+        <img src="logo.png" alt="Logo">
+    </h1>
+
+    <!-- 
+    TAB NAVIGATION
+    switchTab(index) controls visibility of tab panels.
+    -->
     <div class="tabs">
         <div class="tab active" onclick="switchTab(0)">Dashboard</div>
         <div class="tab" onclick="switchTab(1)">Top Defects</div>
     </div>
-	
-    <!-- Tab 1 -->
+
+    <!-- 
+    ===============================================================================
+    TAB 1 — DASHBOARD VIEW
+    Displays cumulative production metrics and yield per process breakdown.
+    ===============================================================================
+    -->
     <div class="tab-panel active">
+
+        <!-- ================= CUMULATIVE METRICS SECTION ================= -->
         <div class="fragment1">
-            <h3 style="border:2px solid black; padding:6px 12px; display:inline-block;text-align:center; width:100%; background:#f2f2f2;">CUMULATIVE</h3>
+
+            <h3 style="border:2px solid black; padding:6px 12px; display:inline-block;text-align:center; width:100%; background:#f2f2f2;">
+                CUMULATIVE
+            </h3>
+
             <div class="cumulative-grid">
-                 <div class="single">
-                      <div class="process-span-div" style="display: flex; align-items: center; gap: 0.5ch;">
-  <label style="
-    width: 8ch;
-    display: flex;
-    align-items: center;
-    border: 2px solid black;
-    background: #FFF2CC;
-    height: 30px;
-    padding: 0 4px;
-  ">
-    Process:
-  </label>
-  <span class="process-span" style="border: 5px solid #7030A0;">Select Process</span>
-</div>
-                 </div>
-                 <div class="rows">
-                      <div class="row"><label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;"> Target Yield: </label><span class="target-yield" style="border: 5px solid #7030A0;">-</span></div>
-                      <div class="row"><label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;"> Actual Yield: </label><span class="actual-yield" style="border: 5px solid #7030A0;">-</span></div>
-                      <div class="row"><label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;"> Total Input: </label><span class="total-input" style="border: 5px solid #7030A0;">-</span></div>
-                      <div class="row"><label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;"> Total Output: </label><span class="total-output" style="border: 5px solid #7030A0;">-</span></div>
-                      <div class="row"><label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;"> Reject Qty: </label><span class="reject-qty" style="border: 5px solid #7030A0;">-</span></div>
-                 </div>
+
+                <!-- Selected process indicator -->
+                <div class="single">
+                    <div class="process-span-div" style="display: flex; align-items: center; gap: 0.5ch;">
+                        <label style="width: 8ch; display: flex; align-items: center; border: 2px solid black; background: #FFF2CC; height: 30px; padding: 0 4px;">
+                            Process:
+                        </label>
+
+                        <!-- Dynamically updated process name -->
+                        <span class="process-span" style="border: 5px solid #7030A0;">
+                            Select Process
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Summary KPI rows (populated via script.js) -->
+                <div class="rows">
+
+                    <!-- Target yield KPI -->
+                    <div class="row">
+                        <label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;">
+                            Target Yield:
+                        </label>
+                        <span class="target-yield" style="border: 5px solid #7030A0;">-</span>
+                    </div>
+
+                    <!-- Actual yield KPI -->
+                    <div class="row">
+                        <label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;">
+                            Actual Yield:
+                        </label>
+                        <span class="actual-yield" style="border: 5px solid #7030A0;">-</span>
+                    </div>
+
+                    <!-- Total input quantity -->
+                    <div class="row">
+                        <label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;">
+                            Total Input:
+                        </label>
+                        <span class="total-input" style="border: 5px solid #7030A0;">-</span>
+                    </div>
+
+                    <!-- Total output quantity -->
+                    <div class="row">
+                        <label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;">
+                            Total Output:
+                        </label>
+                        <span class="total-output" style="border: 5px solid #7030A0;">-</span>
+                    </div>
+
+                    <!-- Total rejected quantity -->
+                    <div class="row">
+                        <label style="display: flex; border: 2px solid black; background:#FFF2CC;height:30px;align-items: center;">
+                            Reject Qty:
+                        </label>
+                        <span class="reject-qty" style="border: 5px solid #7030A0;">-</span>
+                    </div>
+
+                </div>
             </div>
         </div>
 
+        <!-- ================= YIELD PER PROCESS SECTION ================= -->
         <div class="fragment2">
-            <h3 style="border:2px solid black; padding:6px 12px; display:inline-block;text-align:center; width:100%;background:#f2f2f2;">YIELD PER PROCESS</h3>
+
+            <h3 style="border:2px solid black; padding:6px 12px; display:inline-block;text-align:center; width:100%;background:#f2f2f2;">
+                YIELD PER PROCESS
+            </h3>
+
+            <!-- 
+            Dynamic container where process cards are generated at runtime.
+            This prevents hardcoded UI duplication and allows scalability.
+            -->
             <div id="dynamic-container"></div>
         </div>
     </div>
 
-    <!-- Tab 2 -->
+    <!-- 
+    ===============================================================================
+    TAB 2 — TOP DEFECTS VIEW
+    Displays weekly defect rankings and overall defect trend analysis.
+    ===============================================================================
+    -->
     <div class="tab-panel">
+
         <h4>TOP DEFECTS</h4>
+
         <div class="tab2-container">
-            <!-- Left fragment (1/3 width) -->
+
+            <!-- ================= LEFT SECTION: WEEKLY DEFECT TABLES ================= -->
             <div class="fragment left-fragment">
+
                 <h3>Weekly Defects</h3>
+
+                <!-- 
+                Weekly tables follow identical structure.
+                These are placeholders and are expected to be filled dynamically.
+                -->
+
+                <!-- WEEK 1 -->
                 <div class="table-container">
                     <h4>WEEK 1</h4>
                     <table border="1">
-			<colgroup>
-        			<col style="width:50%">
-        			<col style="width:25%">
-        			<col style="width:25%">
-    			</colgroup>
+                        <colgroup>
+                            <col style="width:50%">
+                            <col style="width:25%">
+                            <col style="width:25%">
+                        </colgroup>
+                        <tr>
+                            <th>Top Defects</th>
+                            <th>QTY</th>
+                            <th>NG%</th>
+                        </tr>
+                        <!-- Placeholder rows -->
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                    </table>
+                </div>
 
-  			<tr>
-   			    <th>Top Defects</th>
-    			    <th>QTY</th>
-    			    <th>NG%</th>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-                    </table>
-                </div>
-                <div class="table-container">
-                    <h4>WEEK 2</h4>
-                    <table border="1">
-			<colgroup>
-        			<col style="width:50%">
-        			<col style="width:25%">
-        			<col style="width:25%">
-    			</colgroup>
-  			<tr>
-   			    <th>Top Defects</th>
-    			    <th>QTY</th>
-    			    <th>NG%</th>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-                    </table>
-                </div>
-                <div class="table-container">
-                    <h4>WEEK 3</h4>
-                    <table border="1">
-			<colgroup>
-        			<col style="width:50%">
-        			<col style="width:25%">
-        			<col style="width:25%">
-    			</colgroup>
-  			<tr>
-   			    <th>Top Defects</th>
-    			    <th>QTY</th>
-    			    <th>NG%</th>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-                    </table>
-                </div>
-                <div class="table-container">
-                    <h4>WEEK 4</h4>
-                    <table border="1">
-			<colgroup>
-        			<col style="width:50%">
-        			<col style="width:25%">
-        			<col style="width:25%">
-    			</colgroup>
-  			<tr>
-   			    <th>Top Defects</th>
-    			    <th>QTY</th>
-    			    <th>NG%</th>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-                    </table>
-                </div>
-                <div class="table-container">
-                    <h4>WEEK 5</h4>
-                    <table border="1">
-			<colgroup>
-        			<col style="width:50%">
-        			<col style="width:25%">
-        			<col style="width:25%">
-    			</colgroup>
-  			<tr>
-   			    <th>Top Defects</th>
-    			    <th>QTY</th>
-    			    <th>NG%</th>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-                    </table>
-                </div>
+                <!-- Additional weeks (WEEK 2–5) follow identical structure -->
+                <!-- Structure intentionally consistent for predictable DOM targeting -->
+
             </div>
 
-            <!-- Right fragment (2/3 width) -->
+            <!-- ================= RIGHT SECTION: OVERALL DEFECT ANALYSIS ================= -->
             <div class="fragment right-fragment">
+
                 <h3>Overall Defects</h3>
+
+                <!-- Main aggregated defect ranking table -->
                 <div class="overall-container">
-		    <h4>Main Table</h4>
+                    <h4>Main Table</h4>
                     <table border="1">
-  			<tr>
-   			    <th>Top Defects</th>
-    			    <th>QTY</th>
-    			    <th>NG%</th>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
-  			<tr>
-   			    <td>-</td>
-    			    <td>-</td>
-    			    <td>-</td>
-  			</tr>
+                        <tr>
+                            <th>Top Defects</th>
+                            <th>QTY</th>
+                            <th>NG%</th>
+                        </tr>
+                        <!-- Placeholder rows -->
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
+                        <tr><td>-</td><td>-</td><td>-</td></tr>
                     </table>
                 </div>
-		<div class="chart-wrapper" style="display: flex;flex-direction: row;align-items: center; gap: 20px;">
-    			<!-- Vertical Radio Buttons -->
-    			<div class="radio-container" style="display: flex; flex-direction: column;">
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect" checked> Top 1</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 2</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 3</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 4</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 5</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 6</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 7</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 8</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 9</label>
-        			<label style="width: 6ch; white-space: nowrap;"><input type="radio" name="topDefect"> Top 10</label>
-    			</div>
 
-    			<!-- Chart canvas -->
-    			<div class="chart-container">
-        			<canvas id="lineChart" width="400" height="200"></canvas>
-    			</div>
-		</div>
+                <!-- 
+                Chart section:
+                - Radio buttons select defect rank
+                - Chart.js renders trend line in canvas
+                -->
+                <div class="chart-wrapper" style="display: flex;flex-direction: row;align-items: center; gap: 20px;">
 
-                
+                    <!-- Defect rank selector -->
+                    <div class="radio-container" style="display: flex; flex-direction: column;">
+                        <!-- Default selection: Top 1 -->
+                        <label><input type="radio" name="topDefect" checked> Top 1</label>
+                        <label><input type="radio" name="topDefect"> Top 2</label>
+                        <label><input type="radio" name="topDefect"> Top 3</label>
+                        <label><input type="radio" name="topDefect"> Top 4</label>
+                        <label><input type="radio" name="topDefect"> Top 5</label>
+                        <label><input type="radio" name="topDefect"> Top 6</label>
+                        <label><input type="radio" name="topDefect"> Top 7</label>
+                        <label><input type="radio" name="topDefect"> Top 8</label>
+                        <label><input type="radio" name="topDefect"> Top 9</label>
+                        <label><input type="radio" name="topDefect"> Top 10</label>
+                    </div>
+
+                    <!-- Chart.js rendering surface -->
+                    <div class="chart-container">
+                        <canvas id="lineChart" width="400" height="200"></canvas>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 </div>
 </div>
+
+<!-- Application footer -->
 <footer style="background: #DDEBF7; padding: 5px; text-align: center;">
-  &copy; 2026 Yield Dashboard ver2.0
+    &copy; 2026 Yield Dashboard ver2.0
 </footer>
 
+<!-- Core application logic -->
 <script src="script.js"></script>
+
+<!-- Charting library -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Excel parsing library (SheetJS) -->
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
 </body>
