@@ -1,52 +1,74 @@
+/* ==========================================================================
+   GLOBAL STYLES
+   Applies universal box model normalization and default typography.
+   ========================================================================== */
 * {
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    box-sizing: border-box; /* Ensures padding/border are included in element width */
+    font-family: Arial, sans-serif; /* Default application font */
 }
 
+/* 
+   Root layout configuration.
+   Uses flexbox to allow sidebar + main content layout.
+*/
 body {
     margin: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh; /* Ensures full viewport height */
     background: #CA8EBA;	
 }
+
+/* 
+   Wrapper for sidebar + main content.
+   Separating from body allows future layout flexibility.
+*/
 .content-body {
     margin: 0;
     display: flex;
     min-height: 100vh;
     background: #CA8EBA;
 }
+
+/* ==========================================================================
+   HEADER / LOGO
+   ========================================================================== */
 h1.logo-container {
     text-align: center;
     background: #000000;
-    margin-top: 0;
-    margin-right: 0;
-    margin-left: 0;
+    margin: 0;
 }
 
+/* Constrains logo image height while keeping it centered */
 h1.logo-container img {
-  height: 40px;
-  display: block;
-  margin: 0 auto;
+    height: 40px;
+    display: block;
+    margin: 0 auto;
 }
 
-/* ===== Sidebar ===== */
+/* ==========================================================================
+   SIDEBAR
+   Collapsible navigation panel containing file and sheet controls.
+   ========================================================================== */
 .sidebar {
     width: 260px;
     background: #2c3e50;
     color: white;
     padding: 10px;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease; /* Smooth collapse animation */
 }
 
+/* Collapsed state triggered via JavaScript */
 .sidebar.collapsed {
     width: 55px;
 }
 
+/* Hide internal controls when collapsed */
 .sidebar.collapsed .sidebar-content {
     display: none;
 }
 
+/* Sidebar toggle button */
 .toggle-btn {
     background: #34495e;
     color: white;
@@ -56,6 +78,7 @@ h1.logo-container img {
     width: 100%;
 }
 
+/* Sidebar layout structure */
 .sidebar-content {
     display: flex;
     flex-direction: column;
@@ -64,23 +87,28 @@ h1.logo-container img {
     text-align: center;
 }
 
+/* Sidebar labels */
 .sidebar label {
     font-size: 13px;
     font-weight: bold;
-    text-align: center;
 }
 
+/* Dropdown styling */
 .sidebar select {
     width: 100%;
     padding: 6px;
     text-align: center;
 }
+
+/* File display wrapper */
 .filename-display {
-    display:grid;
+    display: grid;
 }
+
+/* Displays selected file name */
 .file-name {
-    background: white;       /* semicolon instead of colon */
-    border: 2px solid #ccc;  /* width | style | color */
+    background: white;
+    border: 2px solid #ccc;
     padding: 6px;
     border-radius: 3px;
     display: inline-block;
@@ -89,7 +117,7 @@ h1.logo-container img {
     color: #333;
 }
 
-
+/* File open button */
 .open-file-btn {
     padding: 16px;
     background: #1abc9c;
@@ -99,22 +127,28 @@ h1.logo-container img {
     border-radius: 3px;
 }
 
+/* Hover state for better UX feedback */
 .open-file-btn:hover {
     background: #16a085;
 }
 
-/* ===== Main Content ===== */
+/* ==========================================================================
+   MAIN CONTENT AREA
+   ========================================================================== */
 .main {
-    background:#000000;
-    flex: 1;
+    background: #000000;
+    flex: 1; /* Occupies remaining space beside sidebar */
 }
 
-/* ===== Tabs ===== */
+/* ==========================================================================
+   TAB NAVIGATION
+   ========================================================================== */
 .tabs {
     display: flex;
     margin-bottom: 0;
 }
 
+/* Individual tab button */
 .tab {
     padding: 10px 20px;
     cursor: pointer;
@@ -125,17 +159,21 @@ h1.logo-container img {
     border-radius: 6px 6px 0 0;
 }
 
+/* Active tab state */
 .tab.active {
-    display:flex;
+    display: flex;
     background: white;
     font-weight: bold;
     border: 3px solid #7030A0;
 }
 
-/* ===== Tab Panels ===== */
+/* ==========================================================================
+   TAB PANELS
+   Each tab's content container.
+   ========================================================================== */
 .tab-panel {
-    flex:1;
-    display: none;
+    flex: 1;
+    display: none; /* Hidden by default */
     border: 3px solid #7030A0;
     background: white;
     padding: 10px;
@@ -143,124 +181,116 @@ h1.logo-container img {
     min-height: 85%;
 }
 
+/* Active tab panel becomes visible */
 .tab-panel.active {
     display: flex;
     flex-direction: column;
-	
 }
 
-.tab-panel h4{
-    text-align:center; 
+/* Section header styling */
+.tab-panel h4 {
+    text-align: center; 
     margin: 0;
-    background-color:#7030A0;
-    color:#FFFFFF
+    background-color: #7030A0;
+    color: #FFFFFF;
 }
 
-/* ===== Fragments ===== */
-.fragment {
+/* ==========================================================================
+   DASHBOARD FRAGMENTS
+   ========================================================================== */
+.fragment,
+.fragment1,
+.fragment2 {
     flex-direction: column;
     border: 1px solid #ddd;
     padding: 15px;
     margin-bottom: 20px;
     border-radius: 4px;
+}
+
+/* Default fragment background */
+.fragment {
     background: #f2f2f2;
 }
 
-.fragment1 {
-    flex-direction: column;
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+/* Dashboard fragment variations */
+.fragment1,
+.fragment2 {
     background: #CA8EBA;
 }
 
 .fragment2 {
-    flex:1;
-    flex-direction: column;
-    border: 1px solid #ddd;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    background: #CA8EBA;
+    flex: 1; /* Expands to fill remaining height */
 }
 
-.fragment h3 {
-    margin-top: 0;
-    text-align: center;
-}
-
-/* ===== Rows ===== */
+/* ==========================================================================
+   CUMULATIVE METRICS GRID
+   ========================================================================== */
 .cumulative-grid {
-    display:grid;
+    display: grid;
     grid-template-columns: 200px auto;
-    grid-template-rows: auto;
     gap: 10px 100px;
 }
+
+/* Process label container */
 .single {
-    grid-column: 1;   /* second column */
-    grid-row: 1;      /* first row */
+    grid-column: 1;
+    grid-row: 1;
     white-space: nowrap;
-    max-width: 100%;
 }
+
+/* KPI rows container */
 .rows {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 5px 12px; /* row gap / column gap */
+    gap: 5px 12px;
     justify-items: end;
-
 }
-.rows .row span{
-    display: flex;
-    gap: 5px;
 
-}
+/* Individual KPI row */
 .row {
     display: flex;
-    justify-content: flex-start;
-    align-items: center; 
+    align-items: center;
     margin-bottom: 10px;
     gap: 5px;
-
 }
 
+/* KPI label */
 .row label {
     width: 160px;
     font-weight: bold;
 }
 
-.row span {
-    color: #333;
-    white-space: nowrap;
-    border: 1px solid #ccc;   /* light gray border */
-    background-color: #f0f0f0; /* light gray background */
-    padding: 4px 6px;          /* spacing inside box */
-    border-radius: 4px;        /* rounded corners */
-    display: inline-block;     /* keeps box tight around text */
-    width: 15ch;
-}
-
+/* KPI value styling */
+.row span,
 .process-span-div span {
     color: #333;
     white-space: nowrap;
-    border: 1px solid #ccc;   /* light gray border */
-    background-color: #f0f0f0; /* light gray background */
-    padding: 4px 6px;          /* spacing inside box */
-    border-radius: 4px;        /* rounded corners */
-    display: inline-block;     /* keeps box tight around text */
-    width: min-content;
-}
-/* Container for all process rows */
-#dynamic-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
-    gap: 10px; /* space between rows and columns */
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    padding: 4px 6px;
+    border-radius: 4px;
+    display: inline-block;
 }
 
-/* Each row itself */
+/* Fixed width for numeric KPI boxes */
+.row span {
+    width: 15ch;
+}
+
+/* ==========================================================================
+   DYNAMIC PROCESS GRID (Generated via JavaScript)
+   ========================================================================== */
+#dynamic-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+/* Individual process row */
 .process-row {
     display: grid;
-    grid-template-columns: auto min-content min-content; /* Process | Yield | Button */
+    grid-template-columns: auto min-content min-content;
     gap: 5px;
     align-items: center;
     padding: 5px;
@@ -268,27 +298,110 @@ h1.logo-container img {
     background: #CA8EBA;
 }
 
+/* Process name input */
 .process-input {
     border: 3px solid #DDEBF7;
-    width: 100%;      /* fills first column */
-    min-width: 0;     /* ensures it can shrink if needed */
-    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
     background: #f2f2f2;
 }
 
+/* Yield value input */
 .yield-input {
-    width: 9ch; /* only wide enough for its value */
+    width: 9ch;
     background: #f2f2f2;
 }
 
+/* Action button */
 .process-btn {
-    width: min-content; /* only wide enough for the button */
+    width: min-content;
 }
 
+/* ==========================================================================
+   TOP DEFECTS TAB LAYOUT
+   ========================================================================== */
+.tab2-container {
+    display: flex;
+    gap: 20px;
+}
 
+.left-fragment {
+    flex: 1 1 33%;
+}
 
-/* ===== Responsive ===== */
+.right-fragment {
+    flex: 2 1 67%;
+}
+
+/* ==========================================================================
+   TABLE STYLING
+   ========================================================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    table-layout: fixed;
+}
+
+table, th, td {
+    border: 1px solid #333;
+}
+
+th, td {
+    padding: 4px;
+    text-align: center;
+    line-height: 1.1;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+/* Prevent layout overflow from long content */
+td {
+    max-width: 200px;
+}
+
+/* ==========================================================================
+   CHART SECTION
+   ========================================================================== */
+.chart-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+    margin-top: 15px;
+}
+
+/* Defect selector styling */
+#defect-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#defect-selector input[type="radio"] {
+    margin: 4px 0;
+    transform: scale(0.8);
+}
+
+#defect-selector label {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   Adjust layout for tablets and smaller screens.
+   ========================================================================== */
 @media (max-width: 768px) {
+
     body {
         flex-direction: column;
     }
@@ -311,93 +424,13 @@ h1.logo-container img {
         width: 100%;
         margin-bottom: 4px;
     }
-}
 
-
-/* Tab 2 layout */
-.tab2-container {
-    display: flex;
-    gap: 20px;
-}
-
-/* Left fragment 1/3 */
-.left-fragment {
-    flex: 1 1 33%;
-}
-
-/* Right fragment 2/3 */
-.right-fragment {
-    flex: 2 1 67%;
-}
-.table-container h5 {
-    font-weight: bold;
-    text-align: center;
-}
-
-/* Table styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-    table-layout: fixed;       /* enforce column widths from colgroup */
-}
-
-table, th, td {
-    border: 1px solid #333;
-}
-
-th, td {
-    padding: 4px;              /* slightly smaller padding */
-    text-align: center;
-    line-height: 1.1;          /* adjust spacing between lines */
-    word-wrap: break-word;     
-    overflow-wrap: break-word; 
-    vertical-align: top;       
-    font-size: 12px;           /* smaller font for better fit */
-}
-
-/* Optional: prevent super long words from breaking layout */
-td {
-    max-width: 200px;          /* adjust if needed */
-}
-
-/* Chart container */
-.chart-container {
-    width: 100%;
-    height: 300px;
-    margin-top: 15px;
-}
-#defect-selector input[type="radio"] {
-    margin: 4px 0;   /* small vertical spacing */
-    transform: scale(0.8); /* shrink the radio button itself */
-}
-#defect-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 4px; /* optional extra spacing */
-}
-#defect-selector label {
-    font-size: 0.8rem;  /* smaller text */
-    margin-bottom: 4px; /* spacing between labels */
-    display: flex;      /* align radio + label nicely */
-    align-items: center;
-    cursor: pointer;
-}
-.chart-wrapper {
-    display: flex;
-    align-items: flex-start; /* top-align */
-    gap: 20px; /* horizontal space between radio buttons and chart */
-}
-
-
-
-/* Responsive for small screens */
-@media (max-width: 768px) {
     .tab2-container {
         flex-direction: column;
     }
 
-    .left-fragment, .right-fragment {
+    .left-fragment,
+    .right-fragment {
         flex: 1 1 100%;
     }
 }
