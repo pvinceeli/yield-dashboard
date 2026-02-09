@@ -379,7 +379,7 @@ td {
 
 /* Defect selector styling */
 #defect-selector {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     gap: 4px;
 }
@@ -390,10 +390,14 @@ td {
 }
 
 #defect-selector label {
-    font-size: 0.8rem;
-    display: flex;
+    font-size: 0.8rem;  /* smaller text */
+    margin-bottom: 4px; /* spacing between labels */
+    display: flex;      /* align radio + label nicely */
     align-items: center;
     cursor: pointer;
+}
+.radio-container label {
+    white-space: nowrap;
 }
 
 /* ==========================================================================
