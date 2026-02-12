@@ -115,6 +115,7 @@ UI Rendering + Chart.js Visualization
 ---
 
 ## 📁 Project Structure
+```bash
 yield-dashboard/
 │
 ├── index.html # Application layout
@@ -122,7 +123,7 @@ yield-dashboard/
 ├── script.js # Data parsing & business logic
 ├── setup.vbs # Windows launcher helper
 └── README.md
-
+```
 
 ---
 
