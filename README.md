@@ -121,7 +121,7 @@ yield-dashboard/
 ├── index.html # Application layout
 ├── styles.css # UI styling
 ├── script.js # Data parsing & business logic
-├── setup.vbs # Windows launcher helper
+├── setup.vbs # Desktop installer script for Windows (.lnk shortcut + icon setup)
 └── README.md
 ```
 
