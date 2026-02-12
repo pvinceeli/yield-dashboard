@@ -18,6 +18,32 @@ Manufacturing teams often rely on manually reviewing Excel production reports to
 This dashboard automates that workflow by transforming structured Excel reports into an interactive analytics interface.
 
 ---
+## 📌 Project Scope
+
+This system is designed to support manufacturing performance monitoring and yield analysis across multiple operational units.
+
+The dashboard can be utilized by:
+
+- **Production Department** – Monitor daily yield performance, track process efficiency, and identify output gaps.
+- **Quality Assurance (QA) Department** – Analyze defect trends, evaluate NG% rates, and monitor quality stability.
+- **Engineering Department** – Perform root cause analysis, track process improvement initiatives, and evaluate process yield performance.
+
+The tool is intended for internal operational analysis and decision support within manufacturing environments.
+
+---
+
+## 🚀 Deployment
+
+This dashboard was deployed for internal use within the manufacturing environment.
+
+It was used by:
+- Production Department
+- QA Department
+- Engineering Department
+
+The system was integrated into the local network environment and utilized for operational monitoring and yield tracking.
+
+---
 
 ## ✨ Key Capabilities
 
