@@ -5,11 +5,21 @@ let workbook = null;       // Holds the parsed Excel workbook
 let lineChart = null;      // Reference to the line chart instance
 let worksheet = null;      // Currently selected worksheet
 let top10Defects = {};     // Cache for top 10 defect metrics
+const loader = document.getElementById("loader");
 
 // Initialize UI components once the DOM is fully loaded
 window.addEventListener("DOMContentLoaded", () => {
     initEmptyLineChart();
 });
+
+function showLoader() {
+    loader.classList.remove("hidden");
+}
+
+function hideLoader() {
+    loader.classList.add("hidden");
+}
+
 
 // Toggles the sidebar between expanded and collapsed states
 function toggleSidebar() {
@@ -31,6 +41,7 @@ function switchTab(index) {
 document.querySelector(".open-file-btn").addEventListener("click", async () => {
     try {
         // Open native file picker restricted to Excel formats
+	showLoader();
         const [fileHandle] = await window.showOpenFilePicker({
             types: [
                 {
@@ -71,6 +82,7 @@ document.querySelector(".open-file-btn").addEventListener("click", async () => {
             alert("Failed to open Excel file.");
         }
     }
+    hideLoader();
 });
 
 function populateSheetDropdown(workbook) {
