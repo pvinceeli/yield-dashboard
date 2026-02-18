@@ -19,6 +19,73 @@ body {
     background: #CA8EBA;	
 }
 
+/* ===================================== */
+/* Loading Overlay */
+/* ===================================== */
+
+.loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+}
+
+.loader-overlay.hidden {
+    display: none;
+}
+
+.loader-content {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+}
+
+/* Spinner animation */
+.spinner {
+    width: 50px;
+    height: 50px;
+    animation: rotate 1s linear infinite;
+}
+
+.spinner .path {
+    stroke: #4CAF50;
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+/* Rotate animation */
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Stroke animation */
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+
 /* 
    Wrapper for sidebar + main content.
    Separating from body allows future layout flexibility.
@@ -35,7 +102,7 @@ body {
    ========================================================================== */
 h1.logo-container {
     text-align: center;
-    background: #000000;
+    background: #231f20;
     margin: 0;
 }
 
@@ -136,7 +203,7 @@ h1.logo-container img {
    MAIN CONTENT AREA
    ========================================================================== */
 .main {
-    background: #000000;
+    background: #231f20;
     flex: 1; /* Occupies remaining space beside sidebar */
 }
 
